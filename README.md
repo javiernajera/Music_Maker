@@ -1,6 +1,6 @@
 # README for Music_Maker.rb
 ### Listen while you read!
-  Theres a sample of some music generated in this repository called "Music_Maker_Example1.wav", if you want the perfect background music to accompany this README.
+  Theres a sample of some music generated in this repository called "Music_Maker_Example1.wav", if you want the perfect background music to accompany this README ;)
 ## IDEA
 
 The idea behind this project was to build a system using Sonic Pi that was able to generate a random 4 bar chord progression and to also have a melody generator that essentially comps off the chord progression. It plays notes with varying durations and from a scale based on the root of the chord that the chord progression is currently at.  
