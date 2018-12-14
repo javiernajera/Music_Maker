@@ -1,41 +1,38 @@
-set :global_tempo, 95
+set :global_temp, 90
 set :possible_chords, (ring :C4, :Cb4, :Cs4, :D4, :Db4, :Ds4, :E4, :Eb4, :Es4, :F4, :Fb4, :Fs4, :G4, :Gb4, :Gs4, :A4, :Ab4, :As4, :B4, :Bb4, :Bs4)
 set :possible_intervals, [2, 2, 2, 2, 1, 3, 3, 4, 4, 4, 4, 6, 6, 8, 8]
-use_random_seed 41
+use_random_seed 28
 
 
 #41 makes good music
 
-# sets the variable :chord_progression to be a list of 2-6 chords
 define :get_chords do
   num = rrand_i(2, 6)
   set :num_chords, num
   set :chord_progression, get[:possible_chords].shuffle.take(num)
 end
 
-# A simple algorithm to generate a set of intervals that correspond
-# to the chords in :chord_progression
 define :get_intervals do
   beats_left = 16
   counter = 0
   num_chords = get[:num_chords]
-  first_interval = get[:possible_intervals][rrand_i(0, 14)] #sets first interval
+  first_interval = get[:possible_intervals][rrand_i(0, 14)]
   intervals = [first_interval]
   counter += 1
-  beats_left = beats_left - first_interval                  #beats left to fill the
-                                                            #4-bar phrase
+  beats_left = beats_left - first_interval
+  
   while ((num_chords - counter) > 0)
-
-    if ((num_chords - counter) == 1)                        # if one chord is left to be assigned
-      intervals << beats_left                               # an interval, just assign it the
-      set :intervals, intervals.ring                        # beats that are left
+    
+    if ((num_chords - counter) == 1)
+      intervals << beats_left
+      set :intervals, intervals.ring
       counter = counter + 1
-
+      
     else
-      next_interval = get[:possible_intervals][rrand_i(0,14)]   # assigns next_interval
-      if (next_interval < (beats_left + ((num_chords - counter) - 1)))
-        counter = counter + 1                                   # only if there will be at least 1
-        beats_left = beats_left - next_interval                 # beat left for the rest of the intervals
+      next_interval = get[:possible_intervals][rrand_i(0,14)]
+      if (next_interval < (beats_left - (num_chords - counter)))
+        counter = counter + 1
+        beats_left = beats_left - next_interval
         intervals << next_interval
       end
     end
@@ -43,28 +40,25 @@ define :get_intervals do
 end
 
 
-define :get_beat do |numBeats|            # calculates correct interval of time in ratio
-  proportion = 60.0 / get[:global_tempo]   # with the bpm indicated with :global_tempo
+define :get_beat do |numBeats|
+  proportion = 60.0 / get[:global_temp]
   numBeats = numBeats * proportion
 end
 
 
 
-define :play_note do |root|             #plays a note based on the chord with a random scale
+define :play_note do |root|
   interval = choose([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 4, 4, 6, 8])
   play choose(chord(root, :minor)), release: interval*0.9
   sleep interval
 end
 
-define :chord_player do |root, release, interval|   #plays chord with given params
+define :chord_player do |root, release, interval|
   play chord(root, :minor), release: release
   sleep interval
-
+  
 end
 
-
-# this thread contains a kick at every beat, the chord chord_progression
-# and random harmonic (at times dissonat) notes w/ random intervals. 
 in_thread do
   loop do
     sample :drum_heavy_kick
@@ -89,3 +83,9 @@ end
 loop do
   play_note get[:root]
 end
+
+
+
+
+
+
